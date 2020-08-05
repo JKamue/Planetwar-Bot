@@ -47,13 +47,16 @@
     <Compile Include="data\IDataReceiver.cs" />
     <Compile Include="data\DataReceiver.cs" />
     <Compile Include="data\Response.cs" />
-    <Compile Include="objects\Error.cs" />
-    <Compile Include="objects\Login.cs" />
+    <Compile Include="objects\Information\CreateGameInformation.cs" />
+    <Compile Include="objects\Responses\CreateGameResponse.cs" />
+    <Compile Include="objects\Responses\Error.cs" />
+    <Compile Include="objects\Information\Login.cs" />
     <Compile Include="PlanetwarApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

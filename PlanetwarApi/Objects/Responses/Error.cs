@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlanetwarApi.Objects
+namespace PlanetwarApi.Objects.Responses
 {
     public class Error
     {
