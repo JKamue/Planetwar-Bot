@@ -5,8 +5,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PlanetwarApi.data;
-using PlanetwarApi.objects;
+using PlanetwarApi.Data;
+using PlanetwarApi.Objects;
 
 namespace PlanetwarApi
 {
