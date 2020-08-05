@@ -17,41 +17,36 @@ namespace PlanetwarApi.data
             _url = url;
         }
 
-        public string Post(string endpoint, Dictionary<string, string> headers, string body)
+        public Response SendRequest(string endpoint, Dictionary<string, string> headers, string body = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetUri(endpoint));
             headers.ToList().ForEach(h => request.Headers[h.Key] = h.Value);
 
-            request.Method = "POST";
-
-            var byteArray = Encoding.UTF8.GetBytes(body);
-            request.ContentType = "application/json";
-            request.ContentLength = byteArray.Length;
-
-
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            if (body == null)
             {
-                return reader.ReadToEnd();
+                request.Method = "POST";
+                var byteArray = Encoding.UTF8.GetBytes(body);
+                request.ContentType = "application/json";
+                request.ContentLength = byteArray.Length;
             }
-        }
 
-        public string Get(string endpoint, Dictionary<string, string> headers)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetUri(endpoint));
-            headers.ToList().ForEach(h => request.Headers[h.Key] = h.Value);
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            try
             {
-                return reader.ReadToEnd();
+                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return new Response(reader.ReadToEnd(), response.StatusCode);
+                }
+            }
+            catch (WebException e)
+            {
+                using (HttpWebResponse response = (HttpWebResponse)e.Response)
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return new Response(reader.ReadToEnd(), response.StatusCode);
+                }
             }
         }
 

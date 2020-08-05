@@ -9,7 +9,6 @@ namespace PlanetwarApi.data
 {
     public interface IDataReceiver
     {
-        string Post(string endpoint, Dictionary<string, string> headers, string body);
-        string Get(string endpoint, Dictionary<string, string> headers);
+        Response SendRequest(string endpoint, Dictionary<string, string> headers, string body = null);
     }
 }
