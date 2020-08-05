@@ -23,12 +23,16 @@ namespace PlanetwarApi.Data
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetUri(endpoint));
             headers.ToList().ForEach(h => request.Headers[h.Key] = h.Value);
 
-            if (body == null)
+            if (body != null)
             {
                 request.Method = "POST";
                 var byteArray = Encoding.UTF8.GetBytes(body);
                 request.ContentType = "application/json";
                 request.ContentLength = byteArray.Length;
+
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
             }
 
             try
