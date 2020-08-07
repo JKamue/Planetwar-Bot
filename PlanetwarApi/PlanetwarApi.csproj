@@ -48,9 +48,12 @@
     <Compile Include="data\DataReceiver.cs" />
     <Compile Include="data\Response.cs" />
     <Compile Include="objects\Information\CreateGameInformation.cs" />
+    <Compile Include="objects\Information\MoveShipsInformation.cs" />
+    <Compile Include="objects\Location.cs" />
     <Compile Include="objects\Responses\CreateGameResponse.cs" />
     <Compile Include="objects\Responses\Error.cs" />
     <Compile Include="objects\Information\Login.cs" />
+    <Compile Include="objects\Responses\MoveShipsResponse.cs" />
     <Compile Include="PlanetwarApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
