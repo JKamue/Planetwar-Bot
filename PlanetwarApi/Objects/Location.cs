@@ -16,5 +16,7 @@ namespace PlanetwarApi.objects
             X = x;
             Y = y;
         }
+
+        public int Distance(Location l2) => (int) Math.Round(Math.Sqrt(Math.Pow((l2.X - X), 2) + Math.Pow((l2.Y - Y), 2)));
     }
 }
