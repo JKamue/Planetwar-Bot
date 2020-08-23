@@ -47,13 +47,22 @@
     <Compile Include="data\IDataReceiver.cs" />
     <Compile Include="data\DataReceiver.cs" />
     <Compile Include="data\Response.cs" />
+    <Compile Include="objects\Event.cs" />
     <Compile Include="objects\Information\CreateGameInformation.cs" />
     <Compile Include="objects\Information\MoveShipsInformation.cs" />
     <Compile Include="objects\Location.cs" />
+    <Compile Include="objects\Map.cs" />
+    <Compile Include="objects\Planet.cs" />
     <Compile Include="objects\Responses\CreateGameResponse.cs" />
     <Compile Include="objects\Responses\Error.cs" />
     <Compile Include="objects\Information\Login.cs" />
     <Compile Include="objects\Responses\MoveShipsResponse.cs" />
+    <Compile Include="objects\Owner.cs" />
+    <Compile Include="objects\Player.cs" />
+    <Compile Include="objects\Round.cs" />
+    <Compile Include="objects\Sent.cs" />
+    <Compile Include="objects\Stats.cs" />
+    <Compile Include="objects\Tile.cs" />
     <Compile Include="PlanetwarApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

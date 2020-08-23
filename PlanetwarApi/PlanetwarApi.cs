@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -69,6 +70,24 @@ namespace PlanetwarApi
             return Decode<MoveShipsResponse>(response);
         }
 
+        public List<Event> QueryEvents()
+        {
+            var response = _dataReceiver.SendRequest("events", GetGameDictionary());
+            return Decode<List<Event>>(response);
+        }
+        public List<Player> QueryPlayerList()
+        {
+            var response = _dataReceiver.SendRequest("stats", GetGameDictionary());
+            return Decode<List<Player>>(response);
+        }
+        public List<Sent> QuerySentShips()
+        {
+            var response = _dataReceiver.SendRequest("sent", GetGameDictionary());
+            return Decode<List<Sent>>(response);
+        }
+        public Round QueryRoundInformation() => Get<Round>("round");
+        public Map QueryMap() => Get<Map>("map");
+
         private Dictionary<string, string> GetAccountDictionary()
         {
             return new Dictionary<string, string>
@@ -89,6 +108,12 @@ namespace PlanetwarApi
                 { "Account-Key", _accountKey},
                 { "Game-Key", gameKey}
             };
+        }
+
+        private T Get<T>(string endpoint)
+        {
+            var response = _dataReceiver.SendRequest(endpoint, GetGameDictionary());
+            return Decode<T>(response);
         }
 
         private T Decode<T>(Response response)
