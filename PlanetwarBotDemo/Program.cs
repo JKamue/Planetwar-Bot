@@ -15,18 +15,13 @@ namespace PlanetwarBotDemo
 {
     class Program
     {
+        private static PlanetwarApi.PlanetwarApi api;
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Login:");
-            Console.Write("Username: ");
-            var username = Console.ReadLine();
-            Console.Write("Password: ");
-            var password = Console.ReadLine();
-            Console.Clear();
+            var login = Login();
 
-            // Login
-            var login = new Login(password,username);
-            var api = new PlanetwarApi.PlanetwarApi(login, "https://planetwar.jkamue.de/api");
+            api = new PlanetwarApi.PlanetwarApi(login, "https://planetwar.jkamue.de/api");
 
             Console.WriteLine("Press (1) to create new game, anything else to enter existing game");
             var choice = Console.ReadKey().KeyChar;
@@ -34,38 +29,11 @@ namespace PlanetwarBotDemo
 
             if (choice == '1')
             {
-                Console.WriteLine("Enter game settings:");
-                Console.Write("Size: ");
-                var size = Int32.Parse(Console.ReadLine());
-                Console.Write("Players: ");
-                var players = Int32.Parse(Console.ReadLine());
-                Console.Write("Production: ");
-                var production = Int32.Parse(Console.ReadLine());
-                Console.Write("Ships: ");
-                var ships = Int32.Parse(Console.ReadLine());
-                Console.Clear();
-
-                // Creates joins and starts a new game
-                var data = api.CreateGame(ships, production, players, size);
-                Console.WriteLine("Created new game!");
-                Console.WriteLine("ID: " + data.gameId);
-                Console.WriteLine("Code: " + data.gameCode);
-                api.JoinGame(data);
-                Console.WriteLine("Press ENTER to start...");
-                Console.ReadLine();
-                api.StartGame();
+                CreateGamePrompt();
             }
             else
             {
-                Console.WriteLine("Join existing game");
-                Console.Write("ID: ");
-                var id = Console.ReadLine();
-                Console.Write("Key: ");
-                var key = Console.ReadLine();
-                api.JoinGame(id, key);
-
-                Console.WriteLine("Press ENTER if owner started game");
-                Console.ReadLine();
+                JoinGamePrompt();
             }
 
 
@@ -166,6 +134,56 @@ namespace PlanetwarBotDemo
                 this.rating = rating;
                 this.tile = tile;
             }
+        }
+
+        private static int ReadInteger(string text)
+        {
+            Console.Write(text + ": ");
+            return int.Parse(Console.ReadLine());
+        }
+
+        private static void JoinGamePrompt()
+        {
+            Console.WriteLine("Join existing game");
+            Console.Write("ID: ");
+            var id = Console.ReadLine();
+            Console.Write("Key: ");
+            var key = Console.ReadLine();
+            api.JoinGame(id, key);
+
+            Console.WriteLine("Press ENTER if owner started game");
+            Console.ReadLine();
+        }
+
+        private static void CreateGamePrompt()
+        {
+            Console.WriteLine("Enter game settings");
+            var size = ReadInteger(" Size");
+            var players = ReadInteger(" Players");
+            var production = ReadInteger(" Production");
+            var ships = ReadInteger(" Ships");
+            Console.Clear();
+
+            // Creates joins and starts a new game
+            var data = api.CreateGame(ships, production, players, size);
+            Console.WriteLine("Created new game");
+            Console.WriteLine(" ID: " + data.gameId);
+            Console.WriteLine(" Code: " + data.gameCode);
+            api.JoinGame(data);
+            Console.WriteLine("Press ENTER to start...");
+            Console.ReadLine();
+            api.StartGame();
+        }
+
+        private static Login Login()
+        {
+            Console.WriteLine("Login");
+            Console.Write(" Username: ");
+            var username = Console.ReadLine();
+            Console.Write(" Password: ");
+            var password = Console.ReadLine();
+            Console.Clear();
+            return new Login(password, username);
         }
     }
 }
