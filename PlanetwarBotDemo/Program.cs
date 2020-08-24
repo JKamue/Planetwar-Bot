@@ -17,19 +17,57 @@ namespace PlanetwarBotDemo
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Login:");
+            Console.Write("Username: ");
+            var username = Console.ReadLine();
+            Console.Write("Password: ");
+            var password = Console.ReadLine();
+            Console.Clear();
+
             // Login
-            var login = new Login("asdf","Acc3");
+            var login = new Login(password,username);
             var api = new PlanetwarApi.PlanetwarApi(login, "https://planetwar.jkamue.de/api");
 
-            // Creates joins and starts a new game
-            var data = api.CreateGame(50, 12, 2, 10);
-            Console.WriteLine("Created new game!");
-            Console.WriteLine("ID: " + data.gameId);
-            Console.WriteLine("Code: " + data.gameCode);
-            api.JoinGame(data);
-            Console.WriteLine("Press ENTER to start...");
-            Console.ReadLine();
-            api.StartGame();
+            Console.WriteLine("Press (1) to create new game, anything else to enter existing game");
+            var choice = Console.ReadKey().KeyChar;
+            Console.Clear();
+
+            if (choice == '1')
+            {
+                Console.WriteLine("Enter game settings:");
+                Console.Write("Size: ");
+                var size = Int32.Parse(Console.ReadLine());
+                Console.Write("Players: ");
+                var players = Int32.Parse(Console.ReadLine());
+                Console.Write("Production: ");
+                var production = Int32.Parse(Console.ReadLine());
+                Console.Write("Ships: ");
+                var ships = Int32.Parse(Console.ReadLine());
+                Console.Clear();
+
+                // Creates joins and starts a new game
+                var data = api.CreateGame(ships, production, players, size);
+                Console.WriteLine("Created new game!");
+                Console.WriteLine("ID: " + data.gameId);
+                Console.WriteLine("Code: " + data.gameCode);
+                api.JoinGame(data);
+                Console.WriteLine("Press ENTER to start...");
+                Console.ReadLine();
+                api.StartGame();
+            }
+            else
+            {
+                Console.WriteLine("Join existing game");
+                Console.Write("ID: ");
+                var id = Console.ReadLine();
+                Console.Write("Key: ");
+                var key = Console.ReadLine();
+                api.JoinGame(id, key);
+
+                Console.WriteLine("Press ENTER if owner started game");
+                Console.ReadLine();
+            }
+
 
             // The game takes place within the loop
             while (true)
@@ -44,14 +82,10 @@ namespace PlanetwarBotDemo
                 var myPersonalStats = players.First(p => p.owner.name == login.username);
 
                 var myShipCount = CalculateAmountOfShips(login.username, map);      // Calculate the total number of own ships (including hidden ships) (excluding ships in hyperspace)
-                var sentShipCount = sent.Sum(s => s.amount);
-                var hiddenShipCount = myShipCount - myPersonalStats.visibleShips;   // Total - Visible = hidden ships
 
                 // Output some basic info
                 Console.Clear();
                 Console.WriteLine($"Round Nr.{roundInfo.number}");
-                Console.WriteLine($"{sentShipCount + myShipCount} total Ships\n {myPersonalStats.visibleShips} visible Ships\n {hiddenShipCount} hidden Ships\n {sentShipCount} jumping Ships");
-                Console.WriteLine($"Planets: {myPersonalStats.planet}   Production: {myPersonalStats.production}");
 
                 // Generate list of own planets
                 var myPlanets = map.tiles
@@ -60,8 +94,8 @@ namespace PlanetwarBotDemo
 
                 foreach (var planet in myPlanets)
                 {
-                    if (planet.ships == 0)
-                        continue; // Make sure the selected planet has ships
+                    if (planet.ships < roundInfo.number)
+                        continue; // Make sure the selected planet has ships and also establish a small defense fleet
 
                     // Rank each planet by distance && production && enemy ships combined
                     var ranking = new List<TileRating>();
@@ -88,7 +122,15 @@ namespace PlanetwarBotDemo
 
                     var target = ranking[0].tile;
 
-                    api.MoveShips(planet.location, target.location, planet.ships);
+                    try
+                    {
+                        api.MoveShips(planet.location, target.location,
+                            (int) Math.Round((double) planet.ships - roundInfo.number / 2));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Planet has less ships than expected...");
+                    }
                 }
 
                 while (DateTime.Now < roundInfo.start.AddSeconds(roundInfo.length))
@@ -96,7 +138,7 @@ namespace PlanetwarBotDemo
                     Thread.Sleep(500);
                 }
 
-                while (api.QueryRoundInformation().number != roundInfo.number + 1)
+                while (api.QueryRoundInformation().number == roundInfo.number)
                 {
                     Thread.Sleep(250);
                 }
