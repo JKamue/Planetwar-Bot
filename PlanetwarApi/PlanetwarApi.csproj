@@ -64,6 +64,7 @@
     <Compile Include="objects\Stats.cs" />
     <Compile Include="objects\Tile.cs" />
     <Compile Include="PlanetwarApi.cs" />
+    <Compile Include="PlanetwarBot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
