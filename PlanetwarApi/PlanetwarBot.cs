@@ -41,11 +41,8 @@ namespace PlanetwarApi
                 var sent = _api.QuerySentShips();       // List of sent ships
 
                 _loopFunction.Invoke(_api, _username, roundInfo, map, events, players, sent);
-                
-                var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
-                var sourceUTCTime = TimeZoneInfo.ConvertTimeToUtc(roundInfo.start, timeZoneInfo);
-                
-                while (DateTime.Now.ToUniversalTime() < sourceUTCTime.AddSeconds(roundInfo.length))
+
+                while (DateTime.Now.ToUniversalTime() < roundInfo.start.AddSeconds(roundInfo.length))
                 {
                     Thread.Sleep(500);
                 }
